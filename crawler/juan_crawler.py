@@ -26,6 +26,18 @@ class JuanLibraryCrawler(LibraryCrawler):
                 title_tag = book.find('a', class_='name')
                 title = title_tag.text.strip() if title_tag else "제목 없음"
 
+                # 이미지 URL 추출
+                image_url = None
+                thumb_div = book.find('div', class_='thumb')
+                if thumb_div:
+                    img_link_tag = thumb_div.find('a', vimg=True)
+                    if img_link_tag and img_link_tag.get('vimg'):
+                        image_url = img_link_tag.get('vimg')
+                    else:
+                        img_tag = thumb_div.find('img')
+                        if img_tag and img_tag.get('src'):
+                            image_url = img_tag.get('src')
+
                 author = "정보 없음"
                 publisher = "정보 없음"
                 shelf_loc = "정보 없음"
@@ -83,7 +95,8 @@ class JuanLibraryCrawler(LibraryCrawler):
                     'author': author,
                     'publisher': publisher,
                     'shelf_loc': shelf_loc,
-                    'libraryName': '주안도서관'
+                    'libraryName': '주안도서관',
+                    'image_url': image_url
                 })
 
         return results

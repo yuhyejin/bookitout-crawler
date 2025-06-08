@@ -63,6 +63,14 @@ class SubongLibraryCrawler:
                     library = book.find("input", {"name": "pLibName"})["value"].strip()
                     shelf_loc = book.find("input", {"name": "pShelfLoc"})["value"].strip()
 
+                    # 이미지 URL 추출
+                    image_url = None
+                    img_box = book.find("div", class_="img_box")
+                    if img_box:
+                        img_tag = img_box.find("img")
+                        if img_tag and img_tag.get("src"):
+                            image_url = img_tag.get("src")
+
                     raw_loan = book.find("input", {"name": "lonely"})["value"]
                     loan = "대출불가" if "대출중" in unescape(raw_loan) else "대출가능"
 
@@ -83,10 +91,11 @@ class SubongLibraryCrawler:
                                     return_date_text = td_tags[1].text.strip()
                                     if return_date_text:
                                         return_date = return_date_text
-                                if len(td_tags) > 2:
-                                    interlibrary_text = td_tags[2].text.strip()
-                                    if interlibrary_text:
-                                        interlibrary = interlibrary_text
+                                # interlibrary 정보는 현재 HTML에서 명확하게 파싱하기 어려워 None으로 유지합니다.
+                                # if len(td_tags) > 2:
+                                #     interlibrary_text = td_tags[2].text.strip()
+                                #     if interlibrary_text:
+                                #         interlibrary = interlibrary_text
 
                     results.append({
                         "title": title,
@@ -97,7 +106,8 @@ class SubongLibraryCrawler:
                         "library": library,
                         "shelf_loc": shelf_loc,
                         "return_date": return_date,
-                        "interlibrary": interlibrary
+                        "interlibrary": interlibrary,
+                        "image_url": image_url # 이미지 URL 추가
                     })
 
                 except Exception as e:
