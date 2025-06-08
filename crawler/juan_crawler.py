@@ -26,6 +26,33 @@ class JuanLibraryCrawler(LibraryCrawler):
                 title_tag = book.find('a', class_='name')
                 title = title_tag.text.strip() if title_tag else "제목 없음"
 
+                author = "정보 없음"
+                publisher = "정보 없음"
+                shelf_loc = "정보 없음"
+
+                p_tags = book.find_all('p')
+
+                for p_tag in p_tags:
+                    font_tag = p_tag.find('font')
+                    if font_tag:
+                        label = font_tag.text.strip()
+                        full_text = p_tag.text.strip()
+                        
+                        colon_index = full_text.find(':')
+                        
+                        if colon_index != -1:
+                            content = full_text[colon_index + 1:].strip()
+                            
+                            if label == '저자명':
+                                if content.startswith('지은이:'):
+                                    author = content.replace('지은이:', '').strip()
+                                else:
+                                    author = content
+                            elif label == '발행자':
+                                publisher = content
+                            elif label == '소장처':
+                                shelf_loc = content
+
                 loan_status = "정보 없음"
                 return_date = "정보 없음"
                 reservation_status = "정보 없음"
@@ -52,7 +79,11 @@ class JuanLibraryCrawler(LibraryCrawler):
                     'loan': loan_status,
                     'return_date': return_date,
                     'reservation': reservation_status,
-                    'interlibrary': interlibrary
+                    'interlibrary': interlibrary,
+                    'author': author,
+                    'publisher': publisher,
+                    'shelf_loc': shelf_loc,
+                    'libraryName': '주안도서관'
                 })
 
         return results

@@ -14,7 +14,7 @@ import time
 class SubongLibraryCrawler:
     def get_book_status(self, book_title: str) -> List[Dict]:
         options = Options()
-        # options.add_argument("--headless=new")  # 개발 중에는 꺼두기
+        options.add_argument("--headless=new")  # 개발 중에는 꺼두기
         options.add_argument("--window-size=1920,1080")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--no-sandbox")
