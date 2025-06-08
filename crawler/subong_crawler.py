@@ -69,6 +69,25 @@ class SubongLibraryCrawler:
                     reserve_button = book.find("input", {"value": "대출중도서예약"})
                     reservation = "예약가능" if reserve_button else "예약불가"
 
+                    return_date = None
+                    interlibrary = None
+
+                    data_table = book.find("table", class_="data_table")
+                    if data_table:
+                        tbody = data_table.find("tbody")
+                        if tbody:
+                            tr = tbody.find("tr")
+                            if tr:
+                                td_tags = tr.find_all("td")
+                                if len(td_tags) > 1:
+                                    return_date_text = td_tags[1].text.strip()
+                                    if return_date_text:
+                                        return_date = return_date_text
+                                if len(td_tags) > 2:
+                                    interlibrary_text = td_tags[2].text.strip()
+                                    if interlibrary_text:
+                                        interlibrary = interlibrary_text
+
                     results.append({
                         "title": title,
                         "author": author,
@@ -76,7 +95,9 @@ class SubongLibraryCrawler:
                         "loan": loan,
                         "reservation": reservation,
                         "library": library,
-                        "shelf_loc": shelf_loc
+                        "shelf_loc": shelf_loc,
+                        "return_date": return_date,
+                        "interlibrary": interlibrary
                     })
 
                 except Exception as e:
