@@ -9,7 +9,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 
-class CheongnaLakeLibraryCrawler:
+class CheongnaInternationalLibraryCrawler:
     def __init__(self):
         self.URL = "https://www.michuhollib.go.kr/cnl/sch/bsch/list.do?mnidx=414"
 
@@ -26,7 +26,7 @@ class CheongnaLakeLibraryCrawler:
         driver = webdriver.Chrome(service=service, options=options)
 
         try:
-            print(f"'{book_title}' 책을 위해 청라호수도서관 크롤링 시작...")
+            print(f"'{book_title}' 책을 위해 청라국제도서관 크롤링 시작...")
             driver.get(self.URL)
 
             # 페이지가 완전히 로드될 때까지 대기
@@ -112,8 +112,8 @@ class CheongnaLakeLibraryCrawler:
                 except:
                     pass
 
-                # '청라호수' 도서관의 책만 필터링
-                if library != "청라호수":
+                # '청라국제' 도서관의 책만 필터링
+                if library != "청라국제":
                     continue
 
                 try:
@@ -189,4 +189,3 @@ class CheongnaLakeLibraryCrawler:
             return []
         finally:
             driver.quit()
-
