@@ -14,7 +14,7 @@ import time
 class SubongLibraryCrawler:
     def get_book_status(self, book_title: str) -> List[Dict]:
         options = Options()
-        # options.add_argument("--headless=new")  # 개발 중에는 꺼두기
+        options.add_argument("--headless=new")  # 개발 중에는 꺼두기
         options.add_argument("--window-size=1920,1080")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--no-sandbox")
@@ -63,11 +63,34 @@ class SubongLibraryCrawler:
                     library = book.find("input", {"name": "pLibName"})["value"].strip()
                     shelf_loc = book.find("input", {"name": "pShelfLoc"})["value"].strip()
 
+                    # 이미지 URL 추출
+                    image_url = None
+                    img_box = book.find("div", class_="img_box")
+                    if img_box:
+                        img_tag = img_box.find("img")
+                        if img_tag and img_tag.get("src"):
+                            image_url = img_tag.get("src")
+
                     raw_loan = book.find("input", {"name": "lonely"})["value"]
                     loan = "대출불가" if "대출중" in unescape(raw_loan) else "대출가능"
 
                     reserve_button = book.find("input", {"value": "대출중도서예약"})
                     reservation = "예약가능" if reserve_button else "예약불가"
+
+                    return_date = None
+                    interlibrary = None
+
+                    data_table = book.find("table", class_="data_table")
+                    if data_table:
+                        tbody = data_table.find("tbody")
+                        if tbody:
+                            tr = tbody.find("tr")
+                            if tr:
+                                td_tags = tr.find_all("td")
+                                if len(td_tags) > 1:
+                                    return_date_text = td_tags[1].text.strip()
+                                    if return_date_text:
+                                        return_date = return_date_text
 
                     results.append({
                         "title": title,
@@ -76,7 +99,10 @@ class SubongLibraryCrawler:
                         "loan": loan,
                         "reservation": reservation,
                         "library": library,
-                        "shelf_loc": shelf_loc
+                        "shelf_loc": shelf_loc,
+                        "return_date": return_date,
+                        "interlibrary": interlibrary,
+                        "image_url": image_url # 이미지 URL 추가
                     })
 
                 except Exception as e:
