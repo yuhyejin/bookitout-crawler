@@ -91,11 +91,6 @@ class SubongLibraryCrawler:
                                     return_date_text = td_tags[1].text.strip()
                                     if return_date_text:
                                         return_date = return_date_text
-                                # interlibrary 정보는 현재 HTML에서 명확하게 파싱하기 어려워 None으로 유지합니다.
-                                # if len(td_tags) > 2:
-                                #     interlibrary_text = td_tags[2].text.strip()
-                                #     if interlibrary_text:
-                                #         interlibrary = interlibrary_text
 
                     results.append({
                         "title": title,
